@@ -29,6 +29,6 @@ def get_hq():
 
 
 
-#list_folders('')
+list_folders('dc/')
 #list_hqs('dc/batman_que_ri/')
 #get_hq()
