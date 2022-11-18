@@ -12,7 +12,7 @@ from controllers.commands import start, hqc_instagram, list_publishers, unknown,
 
 
 def main() -> None:
-    print('Run the bot.')
+    print('Running bot...')
     updater = Updater(TELEGRAM_BOT_TOKEN,
                   use_context=True)
                   

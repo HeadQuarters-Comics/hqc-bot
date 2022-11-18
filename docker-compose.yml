@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  hqc-bot:
+    container_name: hqc-bot
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/home/app:rw
+    image: hqc-bot
