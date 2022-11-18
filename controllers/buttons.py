@@ -18,6 +18,6 @@ def publisher_button(update: Update, context: CallbackContext) -> None:
         hq = str(hq).replace(f'{selected.lower()}/', '')
         hq = str(hq).replace('/', '')
         hq = hq.replace('_', ' ')
-        message = message + f'\n {hq.capitalize()}'
+        message = message + f'\n {hq.upper()}'
     update.callback_query.message.reply_text(f'{message}')
 

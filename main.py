@@ -8,7 +8,7 @@ from telegram.ext.filters import Filters
 
 from controllers.buttons import publisher_button
 from controllers.messages import unknown_text
-from controllers.commands import start, hqc_instagram, list_publishers, unknown, help
+from controllers.commands import start, hqc_instagram, list_publishers, unknown, help, download
 
 
 def main() -> None:
@@ -20,11 +20,13 @@ def main() -> None:
     updater.dispatcher.add_handler(CommandHandler('instagram', hqc_instagram))
     updater.dispatcher.add_handler(CommandHandler('help', help))
     updater.dispatcher.add_handler(CommandHandler('editoras', list_publishers))
+    updater.dispatcher.add_handler(CommandHandler('baixar', download))
     updater.dispatcher.add_handler(CallbackQueryHandler(publisher_button))
     updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))  # Filters out unknown commands
     updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))
 
     updater.start_polling()
+    updater.idle()
 
 
 if __name__ == "__main__":

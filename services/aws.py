@@ -1,6 +1,7 @@
 from settings import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
 import boto3
+import botocore
 
 def list_folders(prefix):
     s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
@@ -22,13 +23,16 @@ def list_hqs(prefix):
     for object_summary in my_bucket.objects.filter(Prefix=prefix, Delimiter=""):
         print(object_summary.key)
 
-def get_hq():
+def get_hq(publisher, title, edition):
     s3 = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+    try:
+        s3.download_file(Bucket="hqc-hq", Key=f'{publisher}/{title}/{edition}.pdf', Filename=f'data/{title}_{edition}.pdf')
+        return True
+    except botocore.exceptions.ClientError as error:
+        raise error
 
-    s3.download_file(Bucket="hqc-hq", Key="dc/batman_que_ri/DC Rebirth - Batman que ri #01.pdf", Filename="batman_que_ri_01.pdf")
 
 
-
-list_folders('dc/')
+#list_folders('dc/')
 #list_hqs('dc/batman_que_ri/')
-#get_hq()
+#get_hq('marvel', 'abacate', '1')
