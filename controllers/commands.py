@@ -20,10 +20,13 @@ def help(update: Update, context: CallbackContext):
 def list_publishers(update: Update, context: CallbackContext):
     publishers = list_folders('')
     keyboard = []
+    print('-------------------')
+    print('Editoras:')
     for publisher in publishers:
-        print(publisher)
         publisher_name = str(publisher).replace('/', '')
+        print(publisher_name.upper())
         keyboard.append([InlineKeyboardButton(publisher_name.upper(), callback_data=str(publisher_name))])
+    print('-------------------')
 
 
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -43,7 +46,7 @@ def download(update: Update, context: CallbackContext):
     publisher = (context.args[0]).lower()
     title = (context.args[1]).lower().replace('-', '_')
     edition = context.args[2]
-    print(publisher, title, edition)
+    print(f'Parâmentros enviados para download: {publisher}, {title}, {edition}')
     try: 
         get_hq(publisher, title, edition)
     except Exception as error:
@@ -57,9 +60,10 @@ def download(update: Update, context: CallbackContext):
         update.message.reply_text('Opa! Achei aqui. Só um segundo que já estou enviando...')
         hq_path = f'data/{title}_{edition}.pdf'
         new_title = f'{title.replace("_", " ").title()} #{edition}.pdf'
-        print(hq_path)
         update.message.reply_document(document=open(hq_path, 'rb'), filename=new_title, timeout=1000)
     update.message.reply_text('Prontinho. Divirta-se! :D')
+    print(f'HQ -> {new_title} Enviada!')
+    print('-------------------')
     os.remove(hq_path)
         
 

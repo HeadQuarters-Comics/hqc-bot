@@ -3,6 +3,8 @@ FROM python:3.10.8-slim
 
 ENV SERVICE=/home/app
 
+ENV PYTHONUNBUFFERED=1
+
 RUN mkdir -p $SERVICE
 
 # set the working directory in the container

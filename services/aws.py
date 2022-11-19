@@ -13,7 +13,7 @@ def list_folders(prefix):
     for page in my_bucket:
         folders.extend([x['Prefix'] for x in page.get('CommonPrefixes', [])])
 
-    print(folders)
+    #print(folders)
     return folders
 
 def list_hqs(prefix):
