@@ -3,7 +3,7 @@ from telegram.update import Update
 from telegram.ext.callbackcontext import CallbackContext
 import os
 
-from services.aws import list_folders, get_hq
+from services.aws import list_folders, get_hq, list_hqs
 
 def start(update: Update, context: CallbackContext):
     update.message.reply_text(
@@ -12,8 +12,9 @@ def start(update: Update, context: CallbackContext):
 
 def help(update: Update, context: CallbackContext):
     update.message.reply_text("""Comandos disponíveis :
-    /editoras - Para ver a lista de quadrinhos
     /instagram - Para ver o Instagram do HQC
+    /editoras - Para ver a lista de quadrinhos
+    /edicoes - Para ver a quantidades de edições de um título
     /baixar - Para baixar uma edição""")
 
 
@@ -32,9 +33,36 @@ def list_publishers(update: Update, context: CallbackContext):
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text("Escolha a editora para ver os títulos:", reply_markup=reply_markup)
 
+def list_editions(update: Update, context: CallbackContext):
+    if len(context.args) == 0:
+        update.message.reply_text("""Para descobrir a quantidade de edições de uma HQ, é necessário passar a editora e o título.
+        \n Exemplo: /edicoes MARVEL A_THOR""")
+        return
+    if len(context.args) != 2:
+        update.message.reply_text("""⚠️ Opa, calma aí! ⚠️
+        \n Verifique se mandou tudo direitinho.
+        \n Você precisa passar 2 informações: a editora e o título.
+        \n Não esqueça que o nome do título deve ter _ (underline) no lugar dos espaços :b""")
+        return
+    editions = list_hqs(f'{context.args[0]}/{context.args[1]}')
+    if not type(editions).__name__ == 'list':
+        print(f'Não achei a lista de edições. Retornou: {editions}')
+        update.message.reply_text(f'{editions}')
+        return
+    title = context.args[1].upper().replace('_', ' ')
+    message = f'Nós temos {len(editions)} edições de {title}: \n'
+    print('-------------------')
+    print('Edições:')
+    for edition in editions:
+        message = message + f'\n {title} #{edition}.pdf'
+        print(f'{title} #{edition}.pdf')
+    update.message.reply_text(f'{message}')
+    print('-------------------')
+
+
 def download(update: Update, context: CallbackContext):
     if len(context.args) == 0:
-        update.message.reply_text("""Para baixar uma HQ é nessário passar a editora, o título e a edição 
+        update.message.reply_text("""Para baixar uma HQ é necessário passar a editora, o título e a edição 
         \n Exemplo: /baixar MARVEL A_THOR 1""")
         return
     if len(context.args) != 3:
