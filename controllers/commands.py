@@ -111,7 +111,8 @@ def download(update: Update, context: CallbackContext):
     print(f'HQ -> {new_title} Enviada!')
     print('-------------------')
     os.remove(hq_path)
-    alert_admin(f'{name} (@{username}) Solicitou {new_title} #{edition}.pdf às {datetime.datetime.now().astimezone(timezone).strftime("%d/%m/%Y %H:%M")}')
+    alert_admin(f'{name} (@{username}) Solicitou {new_title} às {datetime.datetime.now().astimezone(timezone).strftime("%d/%m/%Y %H:%M")}')
+
         
 
 def hqc_instagram(update: Update, context: CallbackContext):

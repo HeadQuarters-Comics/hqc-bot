@@ -8,5 +8,3 @@ def alert_admin(message):
     print(f'{message}')
     print(f'Avisando os administradores do HQC...')
     print('-------------------')
-
-#alert_admin('teste')
