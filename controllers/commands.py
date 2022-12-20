@@ -61,12 +61,12 @@ def list_editions(update: Update, context: CallbackContext):
         \n Não esqueça que o nome do título deve ter _ (underline) no lugar dos espaços :b""")
         return
 
-    editions = select('editions', 'title', context.args[0])
+    editions = select('editions', 'title', context.args[0].lower())
     print(editions)
     if not type(editions).__name__ == 'list':
         print(f'Não achei a lista de edições. Retornou: {editions}')
         update.message.reply_text(f'Infelizmente não temos nenhuma edição desse título no momento :(')
-        alert_admin(f'{name} (@{username}) Procurou por {context.args[0]} às {datetime.datetime.now().astimezone(timezone).strftime("%d/%m/%Y %H:%M")} mas infelizmente não temos :(')
+        alert_admin(f'{name} (@{username}) Procurou por {context.args[0].lower()} às {datetime.datetime.now().astimezone(timezone).strftime("%d/%m/%Y %H:%M")} mas infelizmente não temos :(')
         return
     title = context.args[1].upper().replace('_', ' ')
     message = f'Nós temos {len(editions)} edições de {title}: \n'
@@ -96,7 +96,7 @@ def download(update: Update, context: CallbackContext):
         return
 
     title = (context.args[0]).lower().replace('-', '_')
-    edition = context.args[1]
+    edition = context.args[1].lower()
     print(f'Parâmentros enviados para download: {title}, {edition}')
     print(select('editions', ['identifier', 'title'], [edition, title]))
     if select('editions', ['identifier', 'title'], [edition, title]):
