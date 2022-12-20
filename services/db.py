@@ -3,6 +3,36 @@ import psycopg2
 from services.telegram import alert_admin
 from settings import DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME
 
+def select(table, param=None, param_value=None):
+    try:
+        connection = psycopg2.connect(user=DB_USER,
+                                      password=DB_PASSWORD,
+                                      host=DB_HOST,
+                                      port=DB_PORT,
+                                      database=DB_NAME)
+
+
+        cursor = connection.cursor()
+        if type(param).__name__ == 'list':
+            cursor.execute("SELECT * from " + table + " where " + param[0] + "='" + param_value[0] + "' and " + param[1] + "='" + param_value[1] + "'")
+        elif param and param_value and not type(param).__name__ == 'list':
+            cursor.execute("SELECT * from " + table + " where " + param + "='" + param_value + "'")
+        else:
+            cursor.execute("SELECT * from " + table)
+        record = cursor.fetchall()
+        if len(record) == 0:
+            return False
+        return record
+
+    except (Exception, psycopg2.Error) as error:
+        print("Erro ao conectar com PostgreSQL", error)
+    finally:
+        if connection:
+            cursor.close()
+            connection.close()
+            print("SELECT ALL - Conexão com PostgreSQL fechada!")
+
+
 def is_in_db(value, table):
     try:
         connection = psycopg2.connect(user=DB_USER,
@@ -26,6 +56,7 @@ def is_in_db(value, table):
             cursor.close()
             connection.close()
             print("SELECT - Conexão com PostgreSQL fechada!")
+
 
 def is_edition_in_db(value, title):
     try:
@@ -83,6 +114,7 @@ def insert_publishers(publishers):
             continue
     return
 
+
 def insert_titles(name, publisher):
     if not is_in_db(name, 'hqs'):
         try:
@@ -107,6 +139,7 @@ def insert_titles(name, publisher):
     else:
         print(f'{name} já existe no banco')
     return
+
 
 def update_editions(editions, title):
     connection = psycopg2.connect(user=DB_USER,
