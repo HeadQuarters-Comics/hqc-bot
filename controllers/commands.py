@@ -68,7 +68,7 @@ def list_editions(update: Update, context: CallbackContext):
         update.message.reply_text(f'Infelizmente não temos nenhuma edição desse título no momento :(')
         alert_admin(f'{name} (@{username}) Procurou por {context.args[0].lower()} às {datetime.datetime.now().astimezone(timezone).strftime("%d/%m/%Y %H:%M")} mas infelizmente não temos :(')
         return
-    title = context.args[1].upper().replace('_', ' ')
+    title = context.args[0].upper().replace('_', ' ')
     message = f'Nós temos {len(editions)} edições de {title}: \n'
     print('-------------------')
     print('Edições:')
@@ -112,7 +112,7 @@ def download(update: Update, context: CallbackContext):
             update.message.reply_text('Opa! Achei aqui. Só um segundo que já estou enviando...')
             hq_path = f'data/{title}_{edition}.pdf'
             new_title = f'{title.replace("_", " ").title()} #{edition}.pdf'
-            #update.message.reply_document(document=open(hq_path, 'rb'), filename=new_title, timeout=1000)
+            update.message.reply_document(document=open(hq_path, 'rb'), filename=new_title, timeout=1000)
         update.message.reply_text('Prontinho. Divirta-se! :D')
         print(f'HQ -> {new_title} Enviada!')
         print('-------------------')
