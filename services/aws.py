@@ -26,7 +26,7 @@ def list_hqs(prefix):
         editions.append(edition_number)
     print('-------------------')
     print(f'Buscando edições em: {prefix}')
-    print(f'Quantidade de edições encontradas foi: {len(editions)}')
+    print(f'Quantidade de edições encontradas foi: {len(editions) - 1}')
     if len(editions) == 0:
         return 'Infelizmente não temos nenhuma edição desse título ainda :('
     editions.pop(0)
@@ -42,6 +42,6 @@ def get_hq(publisher, title, edition):
 
 
 
-#list_folders('dc/')
+#list_folders('')
 #list_hqs('marvel/baby/')
 #get_hq('marvel', 'abacate', '1')

@@ -8,7 +8,7 @@ from telegram.ext.filters import Filters
 
 from controllers.buttons import publisher_button
 from controllers.messages import unknown_text
-from controllers.commands import start, hqc_instagram, list_publishers, unknown, help, download, list_editions
+from controllers.commands import start, hqc_instagram, list_publishers, unknown, help, download, list_editions, sync
 
 
 def main() -> None:
@@ -22,6 +22,7 @@ def main() -> None:
     updater.dispatcher.add_handler(CommandHandler('editoras', list_publishers))
     updater.dispatcher.add_handler(CommandHandler('edicoes', list_editions))
     updater.dispatcher.add_handler(CommandHandler('baixar', download))
+    updater.dispatcher.add_handler(CommandHandler('sync', sync))
     updater.dispatcher.add_handler(CallbackQueryHandler(publisher_button))
     updater.dispatcher.add_handler(MessageHandler(Filters.command, unknown))  # Filters out unknown commands
     updater.dispatcher.add_handler(MessageHandler(Filters.text, unknown_text))

@@ -5,7 +5,10 @@ import os
 import datetime
 import pytz
 
+from settings import TELEGRAM_ADMIN_USERNAME
+
 from services.aws import list_folders, get_hq, list_hqs
+from services.db import insert_publishers, insert_titles, update_editions
 from services.telegram import alert_admin
 
 def start(update: Update, context: CallbackContext):
@@ -113,8 +116,53 @@ def download(update: Update, context: CallbackContext):
     os.remove(hq_path)
     alert_admin(f'{name} (@{username}) Solicitou {new_title} às {datetime.datetime.now().astimezone(timezone).strftime("%d/%m/%Y %H:%M")}')
 
-        
 
+def sync(update: Update, context: CallbackContext):
+    alert_admin(f'Iniciando sincronização com o banco...')
+    update.message.reply_text('Iniciando sincronização com o banco...')
+
+    username = update.message.from_user.username
+    timezone = pytz.timezone("America/Sao_Paulo")
+
+    if username == TELEGRAM_ADMIN_USERNAME:
+        folders = list_folders('')
+        publishers = []
+        for publisher in folders:
+            publisher_name = str(publisher).replace('/', '')
+            publishers.append(publisher_name)
+
+        alert_admin(f'Atualizando editoras - {publishers}')
+        insert_publishers(publishers)
+        update.message.reply_text('Editoras atualizadas!')
+
+        alert_admin(f'Atualizando HQs...')
+        for folder in folders:
+            titles_folders = list_folders(folder)
+            for title in titles_folders:
+                hq_name = str(title).replace(folder, '').replace('/', '')
+                publisher = str(title).replace(hq_name, '').replace('/', '')
+                insert_titles(hq_name, publisher)
+        update.message.reply_text('HQs atualizadas!')
+
+        alert_admin(f'Atualizando edições...')
+        for folder in folders:
+            titles_folders = list_folders(folder)
+            for title in titles_folders:
+                editions = list_hqs(title)
+                title_name = str(title).replace(folder, '').replace('/', '')
+                update_editions(editions, title_name)
+        update.message.reply_text('Edições atualizadas!')
+
+        alert_admin(f'Sincronização concluída!')
+        update.message.reply_text('Sincronização concluída!')
+
+
+    else:
+        alert_admin(f'@{username}) tentou usar o comando de sincronização às {datetime.datetime.now().astimezone(timezone).strftime("%d/%m/%Y %H:%M")}')
+        update.message.reply_text('Você não tem permissão para usar esse comando.')
+
+
+        
 def hqc_instagram(update: Update, context: CallbackContext):
     update.message.reply_text(
         "HQC Comics Instagram => https://www.instagram.com/hqc.comics/")
